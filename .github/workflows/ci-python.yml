@@ -38,6 +38,6 @@ jobs:
         path: htmlcov/
     - name: Execution test
       run: |
-        timeout 10 python app.py &
+        timeout 10 python src/app.py
         sleep 5
         curl -f http://localhost:5000/health

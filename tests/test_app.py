@@ -1,39 +1,35 @@
 import pytest
-from app import app, multiplicar, es_par
+from my_calc_app.app import add, subtract, multiply, divide
 
-# ---------- Fixtures -----------------------------------------------
-@pytest.fixture
-def client():
-    app.testing = True
-    with app.test_client() as client:
-        yield client
 
-# ---------- Tests de rutas -----------------------------------------
-def test_home(client):
-    resp = client.get("/")
-    assert resp.status_code == 200
-    assert b"Hola" in resp.data
+@pytest.mark.parametrize(
+    ("a", "b", "expected"),
+    [(1, 2, 3), (-1, 1, 0), (0.5, 0.5, 1.0)],
+)
+def test_add(a, b, expected):
+    assert add(a, b) == expected
 
-def test_health(client):
-    resp = client.get("/health")
-    assert resp.status_code == 200
-    assert resp.get_json() == {"status": "healthy"}
 
-def test_suma(client):
-    resp = client.get("/suma/3/4")
-    assert resp.status_code == 200
-    assert resp.get_json() == {"resultado": 7}
+@pytest.mark.parametrize(
+    ("a", "b", "expected"),
+    [(5, 2, 3), (-1, -1, 0), (10, 0.5, 9.5)],
+)
+def test_subtract(a, b, expected):
+    assert subtract(a, b) == expected
 
-def test_saludo(client):
-    resp = client.get("/saludo/allen")
-    assert resp.status_code == 200
-    assert resp.data.decode() == "Hola, Allen!"
 
-# ---------- Tests de funciones internas ----------------------------
-@pytest.mark.parametrize("a,b,esperado", [(2, 5, 10), (7, 0, 0)])
-def test_multiplicar(a, b, esperado):
-    assert multiplicar(a, b) == esperado
+@pytest.mark.parametrize(
+    ("a", "b", "expected"),
+    [(3, 4, 12), (-2, 2, -4), (0.5, 0.5, 0.25)],
+)
+def test_multiply(a, b, expected):
+    assert multiply(a, b) == expected
 
-@pytest.mark.parametrize("n,esperado", [(2, True), (3, False)])
-def test_es_par(n, esperado):
-    assert es_par(n) is esperado
+
+def test_divide_ok():
+    assert divide(10, 2) == 5
+
+
+def test_divide_zero():
+    with pytest.raises(ZeroDivisionError):
+        divide(1, 0)
