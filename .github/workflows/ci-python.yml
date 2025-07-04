@@ -11,11 +11,9 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout
-      uses: actions/checkout@v4
+    - uses: actions/checkout@v4
 
-    - name: Configurar Python
-      uses: actions/setup-python@v4
+    - uses: actions/setup-python@v4
       with:
         python-version: '3.11'
 
@@ -23,15 +21,17 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         pip install -r requirements.txt
+        # Si prefieres la opción B (instalación editable), descomenta:
+        # pip install -e ./src
 
     - name: Ejecutar tests
       env:
-        PYTHONPATH: "${{ github.workspace }}/src"
+        PYTHONPATH: "${{ github.workspace }}/src"   # quita esta línea si usas opción B
       run: pytest -v
 
     - name: Ejecutar con cobertura
       env:
-        PYTHONPATH: "${{ github.workspace }}/src"
+        PYTHONPATH: "${{ github.workspace }}/src"   # quita esta línea si usas opción B
       run: |
         pytest --cov=my_calc_app --cov-report=term --cov-report=html
 
